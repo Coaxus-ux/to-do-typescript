@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>To-do Typescript</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" />
+    <script src="bundle.js" defer></script>
+</head>
+
+<body>
+    <main class="container">
+        <div class="container-add-task">
+            <div>
+                <input type="text" id="task2Add" placeholder="Task to be done..." class="input-task" />
+                <button id="addTaskButton" class="add-task-button">Add</button>
+            </div>
+
+            <p class="hidden" id="taskAlert">The task name cannot be empty</p>
+        </div>
+        <div class="container-task hidden" id="containerTask">
+        </div>
+    </main>
+
+</body>
+
+</html>
