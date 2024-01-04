@@ -1,71 +1,76 @@
-document.addEventListener("DOMContentLoaded", function <T>(): void {
-  const addTaskButton: Node = document.getElementById("addTaskButton");
-  getLocalStorage();
-  addTaskButton.addEventListener("click", () => chechInput());
-});
-let globalTask: any[] = [];
+let addTaskButton: HTMLElement;
 let deleteTaskButton: NodeListOf<Element>;
+let containerTask: HTMLElement;
+document.addEventListener('DOMContentLoaded', () => {
+    addTaskButton = document.getElementById('addTaskButton');
+    containerTask = document.getElementById("containerTask");
+    getLocalStorage();
+    addTaskButton.addEventListener('click', () => checkInput())
+});
 
-function chechInput(): void {
-  const task2AddInput = <HTMLInputElement>document.getElementById("task2Add");
-  const addTaskButton = document.getElementById("addTaskButton");
-  const taskAlert = document.getElementById("taskAlert");
-
-  const task2Add = task2AddInput.value.trim();
-
-  if (task2Add.length < 1) {
-    addTaskButton.classList.add("vaiven");
-    taskAlert.classList.remove("hidden");
-    task2AddInput.value = "";
-    setTimeout(() => {
-      addTaskButton.classList.remove("vaiven");
-      taskAlert.classList.add("hidden");
-    }, 1000);
-    return;
-  }
-  task2AddInput.value = "";
-  globalTask.push([
-    {
-      taskName: task2Add,
-      taskId: Math.random().toString(30).substring(2),
-    },
-  ]);
-  addTasks();
+interface ITask {
+    taskName: string;
+    taskId: string;
 }
 
-function addTasks(): void {
-  const containerTask = document.getElementById("containerTask");
-  globalTask.length < 1
-    ? containerTask.classList.add("hidden")
-    : containerTask.classList.remove("hidden");
+let tasks: ITask[] = [];
 
-  containerTask.innerHTML = "";
-  for (let obj of globalTask) {
-    let HTMLtoInsert = `
-    <div class="info-task-container">
-      <p>${obj[0].taskName}</p>
-      <button id="${obj[0].taskId}" class="delete-task-button"><span class="material-symbols-outlined">delete</span></button>
-    </div>
-    `;
-    containerTask.insertAdjacentHTML("beforeend", HTMLtoInsert);
-  }
-  deleteTaskButton = document.querySelectorAll(".delete-task-button");
-  deleteTaskButton.forEach((button) => {
-    button.addEventListener("click", () => deleteTask(button.id));
-  });
-  addLocalStorage();
+function checkInput(): void {
+    const task2Add: HTMLInputElement = <HTMLInputElement>document.getElementById('task2Add');
+    const taskAlert: HTMLElement = document.getElementById('taskAlert');
+    const task: string = task2Add.value.trim();
+    if (task.length < 1) {
+        addTaskButton.classList.toggle("vaiven");
+        taskAlert.classList.toggle("hidden")
+        setTimeout(() => {
+            addTaskButton.classList.toggle("vaiven");
+            taskAlert.classList.toggle("hidden")
+        }, 1000)
+        return;
+    }
+    tasks.push(
+        {
+            taskName: task,
+            taskId: Math.random().toString(30).substring(2),
+        }
+    )
+    task2Add.value = "";
+    addTaskHTML()
+}
+
+function addTaskHTML(): void {
+    tasks.length < 1
+      ? containerTask.classList.add("hidden")
+      : containerTask.classList.remove("hidden");
+
+    containerTask.innerHTML = "";
+    for (let obj of tasks) {
+        let HTMLtoInsert: string = `
+              <div class="info-task-container">
+                <p>${obj.taskName}</p>
+                <button id="${obj.taskId}" class="delete-task-button"><span class="material-symbols-outlined">delete</span></button>
+              </div>
+      `;
+        containerTask.insertAdjacentHTML("beforeend", HTMLtoInsert);
+    }
+    deleteTaskButton = document.querySelectorAll(".delete-task-button");
+    deleteTaskButton.forEach((button) => {
+        button.addEventListener("click", () => deleteTask(button.id))
+    })
+    addLocalStorage()
+}
+
+function deleteTask(taskIdToDelete: string): void {
+    tasks = tasks.filter((task) => task.taskId !== taskIdToDelete);
+    addTaskHTML();
 }
 function addLocalStorage(): void {
-  localStorage.setItem("task", JSON.stringify(globalTask));
-}
-function getLocalStorage(): void {
-  const task = localStorage.getItem("task");
-  if (task) {
-    globalTask = JSON.parse(task);
-    addTasks();
+    localStorage.setItem("task", JSON.stringify(tasks));
   }
-}
-function deleteTask(taskIdToDelete: string): void {
-  globalTask = globalTask.filter((task) => task[0].taskId !== taskIdToDelete);
-  addTasks();
-}
+  function getLocalStorage(): void {
+    const task = localStorage.getItem("task");
+    if (task) {
+      tasks = JSON.parse(task);
+      addTaskHTML();
+    }
+  }
